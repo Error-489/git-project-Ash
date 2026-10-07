@@ -107,6 +107,8 @@ public class Git
 		{
     		String hashedFile = hashFile("Hello.txt");
     		System.out.println(hashedFile);
+			stageFile(args[0]);
+        	System.out.println("Staged: " + args[0]);
 		}
 		catch (IOException e) 
 		{
