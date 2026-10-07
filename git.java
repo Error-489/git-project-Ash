@@ -80,7 +80,7 @@ public class Git
 			Path objects = git.resolve("objects");
 			Path index = git.resolve("index");
 			Path HEAD = git.resolve("HEAD");
-			boolean exists = Files.isDirectory(git) && Files.isRegularFile(objects) && Files.isRegularFile(index) && Files.isDirectory(HEAD);
+			boolean exists = Files.isDirectory(git) && Files.isDirectory(objects) && Files.isRegularFile(index) && Files.isRegularFile(HEAD);
 			
 			Files.createDirectories(objects);
 
