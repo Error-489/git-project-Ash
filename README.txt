@@ -7,3 +7,7 @@ test with 'java BlobTester'
 gp 2.4
 added stage file which adds file to git/index for a blob with a relative path
 
+
+gp 4.1 - the code worked in making the root tree - fixed extra line bug
+gp 4.2 - made commits work using the root tree, added local time import for commit time
+gp 4.3 - made gitwrapper class
