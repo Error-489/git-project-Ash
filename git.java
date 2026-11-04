@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -7,6 +8,11 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HexFormat;
 import java.util.List;
+import java.time.LocalDateTime;
+import java.io.File;
+import java.io.FileWriter;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 
 public class Git {
 	public static String createBlob(String filePath) throws IOException {
@@ -134,6 +140,10 @@ public class Git {
 			}
 		}
 
+		if (treeContent.length() > 0) {
+			treeContent.setLength(treeContent.length() - 1);
+		}
+
 		byte[] treeBytes = treeContent.toString().getBytes();
 		MessageDigest digest;
 		try {
@@ -221,6 +231,44 @@ public class Git {
 		return treeHash;
 	}
 
+	public static String commit(String author, String message) throws IOException {
+		String rootTreeHash = createRootTree();
+		Path headPath = Path.of("git", "HEAD");
+		String lastCommitsHash = Files.readString(headPath).trim();
+
+		StringBuilder content = new StringBuilder();
+		content.append("tree: ").append(rootTreeHash).append("\n");
+		if (!lastCommitsHash.isEmpty()) {
+			content.append("parent: ").append(lastCommitsHash).append("\n");
+		}
+
+		content.append("author: ").append(author).append("\n");
+		LocalDateTime currentDateTime = LocalDateTime.now();
+		content.append("date: ").append(currentDateTime).append("\n");
+		content.append("message: ").append(message).append("\n");
+
+		File tempFile = new File("git/objects/newCommit.txt");
+
+		FileWriter tempWriter = new FileWriter(tempFile, StandardCharsets.UTF_8); 
+		tempWriter.write(content.toString());
+		tempWriter.close();
+
+		String commitHash = hashFile(tempFile.getPath());
+
+		if (!tempFile.delete()) {
+			throw new IOException("Coldnt delete tempfile");}
+
+		File commitFile = new File("git/objects/" + commitHash);
+		FileWriter commitWriter = new FileWriter(commitFile, StandardCharsets.UTF_8); 
+
+		commitWriter.write(content.toString());
+		commitWriter.close();
+
+		Files.writeString(headPath, commitHash);
+
+		return commitHash;
+	}
+
 	public static void main(String[] args) throws IOException {
 		init();
 		try {
@@ -239,6 +287,7 @@ public class Git {
 			System.out.println(createTree(workingList, ""));
 			System.out.println(createRootTree());
 			System.out.println(createRootTree());
+			System.out.println(commit("Test Author", "Test GP-4.2 commit"));
 		} catch (IOException e) {
 			System.out.println("File error: " + e.getMessage());
 		}
