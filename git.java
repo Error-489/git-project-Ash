@@ -11,8 +11,6 @@ import java.util.List;
 import java.time.LocalDateTime;
 import java.io.File;
 import java.io.FileWriter;
-import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
 
 public class Git {
 	public static String createBlob(String filePath) throws IOException {
@@ -249,17 +247,18 @@ public class Git {
 
 		File tempFile = new File("git/objects/newCommit.txt");
 
-		FileWriter tempWriter = new FileWriter(tempFile, StandardCharsets.UTF_8); 
+		FileWriter tempWriter = new FileWriter(tempFile, StandardCharsets.UTF_8);
 		tempWriter.write(content.toString());
 		tempWriter.close();
 
 		String commitHash = hashFile(tempFile.getPath());
 
 		if (!tempFile.delete()) {
-			throw new IOException("Coldnt delete tempfile");}
+			throw new IOException("Coldnt delete tempfile");
+		}
 
 		File commitFile = new File("git/objects/" + commitHash);
-		FileWriter commitWriter = new FileWriter(commitFile, StandardCharsets.UTF_8); 
+		FileWriter commitWriter = new FileWriter(commitFile, StandardCharsets.UTF_8);
 
 		commitWriter.write(content.toString());
 		commitWriter.close();
@@ -287,7 +286,7 @@ public class Git {
 			System.out.println(createTree(workingList, ""));
 			System.out.println(createRootTree());
 			System.out.println(createRootTree());
-			System.out.println(commit("Test Author", "Test GP-4.2 commit"));
+			System.out.println(commit("bobby", "comit"));
 		} catch (IOException e) {
 			System.out.println("File error: " + e.getMessage());
 		}
